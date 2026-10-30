@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo Attendance Case Study</title>
+<meta name="description" content="Bhanzu Growth PM case study by Shourya Singh: why booked families miss the free demo, what to ship first, and a warm-up quest built to lift attendance.">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martel:wght@700;800;900&family=Mukta:wght@400;500;600;700&family=Kalam:wght@400;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: an answer sheet. Each part is numbered in a red left margin, like answers in a maths copy; teacher-style handwritten notes flag the key points.
+   Light = squared exercise-book paper; dark = blackboard. Same world as the quest prototype. */
+:root{
+  --paper:#FAFAF3; --grid:#E1E9F2; --sheet:#FFFFFF; --graphite:#24272E; --pencil:#5F656E; --line:#CDD7E3;
+  --ink:#1F3C96; --ink-deep:#122561; --on-ink:#FFFFFF; --ink-2:#7C93CF;
+  --margin:#CF3434; --margin-soft:#FBE4E1; --hl:#FFE45E; --hl-ink:#24272E;
+  --wa:#E2F5DF; --wa-line:#BEE2B8;
+  --display:'Martel', Georgia, 'Times New Roman', serif;
+  --body:'Mukta', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --hand:'Kalam', 'Segoe Print', 'Comic Sans MS', cursive;
+  --mono:'IBM Plex Mono', ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#1B2722; --grid:#23312B; --sheet:#202E28; --graphite:#ECF1EC; --pencil:#A9B9B0; --line:#36483F;
+  --ink:#A8C7FF; --ink-deep:#6F95DD; --on-ink:#14201B; --ink-2:#6A85B8;
+  --margin:#FF8C82; --margin-soft:#3B2826; --hl:#F1DD6E; --hl-ink:#1B2722;
+  --wa:#1F3A2B; --wa-line:#2C5640; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#1B2722; --grid:#23312B; --sheet:#202E28; --graphite:#ECF1EC; --pencil:#A9B9B0; --line:#36483F;
+  --ink:#A8C7FF; --ink-deep:#6F95DD; --on-ink:#14201B; --ink-2:#6A85B8;
+  --margin:#FF8C82; --margin-soft:#3B2826; --hl:#F1DD6E; --hl-ink:#1B2722;
+  --wa:#1F3A2B; --wa-line:#2C5640; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--graphite);font-family:var(--body);font-size:18px;line-height:1.6;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 80px}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+h1{font-family:var(--display);font-weight:900;font-size:clamp(1.9rem,5.4vw,3.1rem);line-height:1.12;color:var(--ink);letter-spacing:-.01em}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(1.35rem,3.6vw,1.6rem);line-height:1.25;color:var(--ink)}
+h3{font-family:var(--body);font-weight:700;font-size:1.15rem;margin-top:14px;padding-top:14px;border-top:1.5px solid var(--line)}
+h3.flush{border-top:0;padding-top:0;margin-top:0}
+h4{font-family:var(--body);font-weight:700;font-size:1rem}
+p,ul,ol{margin:0}
+ul,ol{padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
+li::marker{color:var(--margin)}
+a{color:var(--ink);text-underline-offset:3px}
+mark{background:linear-gradient(transparent 55%, var(--hl) 55%, var(--hl) 92%, transparent 92%);color:inherit;padding:0 2px}
+.muted{color:var(--pencil)} .small{font-size:.9rem}
+.num{font-family:var(--mono);font-size:.86em;font-variant-numeric:tabular-nums}
+.hand{font-family:var(--hand);color:var(--margin);font-size:1.12rem;line-height:1.35}
+.lede{font-size:1.1rem;font-weight:600;line-height:1.5}
+
+/* masthead on squared paper */
+.mast{margin:0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))) 0;padding:44px max(16px, env(safe-area-inset-left, 0px)) 30px;
+  background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px, transparent 1px),linear-gradient(90deg, var(--grid) 1px, transparent 1px);background-size:24px 24px;border-bottom:2px solid var(--graphite)}
+.mast .in{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.topline{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.85rem;color:var(--pencil)}
+.topline u{font-family:var(--hand);font-size:1.05rem;color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--pencil);padding:0 6px}
+.parts{display:flex;flex-wrap:wrap;gap:6px 18px;font-weight:600;font-size:.95rem}
+.parts a{text-decoration:none;color:var(--graphite)} .parts a span{color:var(--margin);font-family:var(--hand);margin-right:4px}
+.parts a:hover{color:var(--ink)}
+.cta{display:inline-block;background:var(--ink);color:var(--on-ink);text-decoration:none;font-weight:700;padding:9px 16px;border-radius:6px;box-shadow:0 3px 0 var(--ink-deep)}
+.tryrow{display:flex;flex-direction:column;gap:8px}
+.tryrow .k{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--margin)}
+
+/* answer-sheet grid: margin column + text column */
+.sheet{max-width:880px;margin:0 auto}
+.ans{display:grid;grid-template-columns:76px minmax(0,1fr);border-bottom:1.5px solid var(--line);scroll-margin-top:12px}
+.ans .mg{border-right:2px solid var(--margin);padding:34px 12px 0 0;text-align:right}
+.ans .mg b{font-family:var(--hand);font-size:2rem;color:var(--margin);line-height:1}
+.ans .mg span{display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--pencil);margin-top:4px}
+.ans .tx{padding:32px 0 44px 24px;display:flex;flex-direction:column;gap:18px;min-width:0;max-width:740px}
+.brief{font-size:.88rem;color:var(--pencil);border:1.5px dashed var(--line);padding:8px 12px;margin-top:-6px}
+.brief b{color:var(--graphite)}
+@media (max-width:620px){ .ans{grid-template-columns:34px minmax(0,1fr)} .ans .mg{padding-right:7px} .ans .mg b{font-size:1.4rem} .ans .mg span{display:none} .ans .tx{padding-left:12px} body{font-size:17px} }
+
+/* key takeaway callouts */
+.callout{background:var(--sheet);border:2px solid var(--graphite);border-left:6px solid var(--margin);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.callout .k{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--margin)}
+.quote{border-left:3px solid var(--ink);padding:6px 0 6px 16px;font-family:var(--display);font-weight:700;font-size:1.05rem;line-height:1.45;color:var(--ink)}
+.quote small{display:block;font-family:var(--body);font-weight:600;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--pencil);margin-bottom:2px}
+.verdict{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+
+/* executive summary */
+.exec{display:grid;grid-template-columns:150px minmax(0,1fr);gap:0;border-top:2px solid var(--graphite)}
+.exec > div{padding:10px 0;border-bottom:1.5px solid var(--line);min-width:0}
+.exec .lab{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--margin);padding-right:12px;padding-top:13px}
+.exec ol,.exec ul{gap:6px}
+@media (max-width:620px){ .exec{grid-template-columns:1fr} .exec .lab{border-bottom:0;padding-bottom:0} }
+
+/* no-show split */
+.split{display:flex;flex-direction:column;gap:10px}
+.split .bar{display:flex;height:46px;gap:2px}
+.split .bar div{display:flex;align-items:center;padding:0 8px;font-family:var(--mono);font-size:.82rem;font-weight:500;white-space:nowrap;overflow:hidden;min-width:0}
+.s1{background:var(--ink);color:var(--on-ink)} .s2{background:var(--ink-2);color:var(--on-ink)} .s3{background:var(--margin);color:var(--on-ink)}
+.split .keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:6px 16px;font-size:.9rem}
+.split .keys span{display:flex;gap:8px;align-items:baseline}
+.split .keys i{width:11px;height:11px;flex:none;display:inline-block;transform:translateY(1px)}
+
+figure{margin:0;display:flex;flex-direction:column;gap:8px}
+figcaption{font-size:.88rem;color:var(--pencil)}
+.chartwrap{position:relative;overflow-x:auto;background-color:var(--sheet);background-image:linear-gradient(var(--grid) 1px, transparent 1px),linear-gradient(90deg, var(--grid) 1px, transparent 1px);background-size:20px 20px;border:1.5px solid var(--line)}
+.chartwrap svg{display:block;width:100%;min-width:500px;height:auto}
+.tip{position:absolute;pointer-events:none;background:var(--graphite);color:var(--paper);font-size:.82rem;padding:5px 10px;border-radius:3px;white-space:nowrap;transform:translate(-50%,-130%)}
+
+.tablewrap{overflow-x:auto;max-width:100%}
+table{border-collapse:collapse;width:100%;font-size:.93rem;line-height:1.45}
+th,td{text-align:left;padding:9px 12px 9px 0;border-bottom:1.5px solid var(--line);vertical-align:top}
+td:last-child,th:last-child{padding-right:0}
+th{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:var(--pencil);font-weight:700;border-bottom:2px solid var(--graphite)}
+tfoot td{font-weight:700;border-bottom:0;border-top:2px solid var(--graphite)}
+td.r,th.r{text-align:right}
+.scrollx table{min-width:620px}
+.scrollhint{display:none}
+@media (max-width:620px){ .scrollhint{display:block} }
+.tag{display:inline-block;font-size:.78rem;font-weight:700;padding:1px 8px;border-radius:3px;white-space:nowrap}
+.t-now{background:var(--ink);color:var(--on-ink)} .t-next{background:var(--hl);color:var(--hl-ink)} .t-later{border:1.5px solid var(--pencil);color:var(--pencil)}
+
+.box{border:1.5px dashed var(--pencil);background:var(--sheet);padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+
+.idea{display:flex;flex-direction:column;gap:12px;padding-top:22px;border-top:2px solid var(--graphite);scroll-margin-top:12px}
+.idea-head{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;justify-content:space-between}
+.idea-head h3{border:0;padding:0;margin:0;font-size:1.2rem}
+.facts{display:grid;grid-template-columns:110px minmax(0,1fr);gap:6px 12px;font-size:.95rem}
+.facts dt{font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;font-weight:700;color:var(--pencil);padding-top:3px}
+.facts dd{margin:0;min-width:0}
+@media (max-width:620px){ .facts{grid-template-columns:1fr;gap:2px} .facts dd{margin-bottom:8px} }
+
+.thread{display:flex;flex-direction:column;gap:14px}
+.msg{display:grid;grid-template-columns:128px minmax(0,1fr);gap:14px;align-items:start}
+.msg .when{font-size:.8rem;color:var(--pencil);padding-top:8px;line-height:1.35}
+.msg .when b{display:block;font-size:.9rem;color:var(--graphite)}
+.bub{display:flex;flex-direction:column;gap:0;max-width:440px;min-width:0}
+.bubble{background:var(--wa);border:1px solid var(--wa-line);border-radius:3px 12px 12px 12px;padding:10px 13px;white-space:pre-line;font-size:.95rem;line-height:1.5;overflow-wrap:anywhere}
+.qrs{display:flex;flex-direction:column;gap:2px;margin-top:3px}
+.qrs span{background:var(--wa);border:1px solid var(--wa-line);border-radius:8px;text-align:center;padding:5px;font-size:.88rem;font-weight:600;color:var(--ink)}
+.ph{font-family:var(--mono);font-size:.82em;color:var(--ink)}
+.why{grid-column:2;font-size:.85rem;color:var(--pencil);margin-top:-6px}
+@media (max-width:620px){ .msg{grid-template-columns:1fr;gap:6px} .msg .when{padding-top:0} .why{grid-column:1;margin-top:0} }
+
+.steps{list-style:none;padding:0;gap:0;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:1.5px solid var(--line)}
+.steps li:last-child{border-bottom:0}
+.steps li::before{content:counter(s) ".";font-family:var(--hand);font-size:1.25rem;color:var(--margin);line-height:1.3}
+.who{font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-right:6px;color:var(--ink)}
+.who.c{color:var(--margin)} .who.s{color:var(--pencil)}
+
+.sig{border:2px solid var(--graphite);padding:16px 18px;display:flex;flex-direction:column;gap:8px;background:var(--sheet);min-width:0}
+.sig .k{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--margin)}
+.sig .big{font-family:var(--display);font-weight:800;font-size:1.15rem;line-height:1.35;color:var(--ink)}
+.sig.soft{border-style:dashed;border-color:var(--pencil)}
+
+.launch{display:flex;gap:12px 16px;align-items:center;flex-wrap:wrap;border:2px solid var(--ink);background:var(--sheet);padding:16px 18px}
+.launch p{flex:1 1 260px;min-width:0}
+.tryit{display:flex;gap:10px;flex-wrap:wrap}
+.cta.ghost{background:var(--sheet);color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink),0 3px 0 var(--ink)}
+a:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
+.endnote{max-width:880px;margin:24px auto 0;font-size:.85rem;color:var(--pencil)}
+</style>
+</head>
+<body>
+
+<header class="mast"><div class="in">
+  <div class="topline"><span>Bhanzu · Growth PM case study</span><span>Name <u>Shourya Singh</u> Date <u>30 Oct 2026</u></span></div>
+  <h1>Getting more booked families to the demo</h1>
+  <div class="tryrow">
+    <span class="k">Try it</span>
+    <div class="tryit">
+      <a class="cta" href="https://claude.ai/artifact/AP3ignfuwBQgW3CaatnbMv" target="_blank" rel="noopener">Warm-up quest ↗</a>
+      <a class="cta ghost" href="https://bhanzu-demo-prep.onrender.com" target="_blank" rel="noopener">Full prototype ↗</a>
+      <a class="cta ghost" href="https://bhanzu-mobile.onrender.com" target="_blank" rel="noopener">Phone app ↗</a>
+    </div>
+  </div>
+  <nav class="parts" aria-label="Sections"><a href="#summary"><span>✓</span>Summary</a><a href="#p1"><span>1.</span>Read the data</a><a href="#p2"><span>2.</span>Diagnose the drop</a><a href="#p3"><span>3.</span>Ideas</a><a href="#p4"><span>4.</span>Micro-experience</a><a href="#assumptions"><span>A.</span>Assumptions and risks</a><a href="#walkthrough"><span>Q.</span>Walkthrough</a></nav>
+</div></header>
+
+<main class="sheet">
+
+<!-- EXECUTIVE SUMMARY -->
+<section class="ans" id="summary"><div class="mg"><b>✓</b><span>Summary</span></div><div class="tx">
+  <h2>Executive summary</h2>
+  <p class="lede">About 35 of every 100 families who book a free demo do not come, and a family that misses is almost never recovered. Most of those families booked for today or tomorrow, so the fix has to work on a short gap, not only a long one.</p>
+
+  <div class="exec">
+    <div class="lab">3 findings</div>
+    <div><ol>
+      <li><b>The drop is a step, not a slope.</b> Attendance holds at 66% for 0-1 days, slips to 62-64% at 2-3 days, and sits at 55-57% from day 4. Day 6 (63%) is likely noise or a weekday effect.</li>
+      <li><b>Most no-shows are near-term bookings.</b> The 65% benchmark sits 1 point below the 0-1 day rate, so about three quarters of bookings must land within 48 hours. That puts about 25 of every 35 no-shows in the 0-1 day group. Fixing every longer gap adds about 1.25 points at best.</li>
+      <li><b>A 5-day booker is a different parent, and a same-day booker still misses 34%.</b> Selection and fading intent explain the long-gap drop. Forgetting cannot explain the same-day misses: nobody notices a skip, second thoughts about a sales call, and a child who was never asked.</li>
+    </ol></div>
+    <div class="lab">Solution</div>
+    <div><p>Ship a rewritten, capped WhatsApp sequence and one-tap rescheduling first: cheap, live in days, and they reach every booking. Then the bet: a <b>5-minute warm-up quest</b> for the child, linked in the booking confirmation. I chose it because it is the only idea aimed at the child, who is the one attending; it works on a booking made at noon for 5 PM; and it hands the teacher and the counsellor something real to open with.</p></div>
+    <div class="lab">Early signal</div>
+    <div><p>The morning-of <b>"Yes, we'll be there"</b> WhatsApp reply rate, test arm vs control, counting only the WhatsApp reply. Readable by day 3.</p></div>
+    <div class="lab">Decision</div>
+    <div><p>Go/no-go on <b>attendance per booking</b> (+3 points, about 4,000 bookings per arm). <b>Enrollments per booking</b> confirms it (about 35,000 per arm) and must not fall.</p></div>
+    <div class="lab">First 2 weeks</div>
+    <div><ul>
+      <li><b>Week 1:</b> pull booking-level data; call 10 families who missed and 5 who came; get templates approved; launch the new sequence and reschedule flow against the current one.</li>
+      <li><b>Week 2:</b> pilot the quest with 10 teachers; fix the biggest drop in the handover funnel; start the randomised quest test.</li>
+    </ul></div>
+    <div class="lab">The ask</div>
+    <div><p>A booking-level data export, counsellor time to reach 15 families, WhatsApp template approval, and one engineer for 2 to 3 weeks with 10 teachers for the pilot.</p></div>
+  </div>
+
+  <div class="split" role="img" aria-label="Estimated no-shows per 100 bookings: about 25.5 from bookings 0 to 1 days out, 5.6 from 2 to 3 days, 4.2 from 4 to 7 days.">
+    <h3 class="flush">Where the ~35 no-shows per 100 bookings come from</h3>
+    <div class="bar"><div class="s1" style="flex:25.5">≈25.5</div><div class="s2" style="flex:5.6">5.6</div><div class="s3" style="flex:4.2">4.2</div></div>
+    <div class="keys"><span><i class="s1"></i>Booked 0-1 days out (≈75 bookings)</span><span><i class="s2"></i>2-3 days out (≈15)</span><span><i class="s3"></i>4-7 days out (≈10)</span></div>
+    <p class="small muted">Estimate. The booking mix is back-solved from the 65% benchmark (Part 1). Real row counts replace it.</p>
+  </div>
+</div></section>
+
+<!-- PART 1 -->
+<section class="ans" id="p1"><div class="mg"><b>1.</b><span>Read the data</span></div><div class="tx">
+  <h2>Part 1. Read the data</h2>
+  <p class="brief"><b>The brief:</b> what pattern stands out, what questions it raises, what I'd want to know before drawing conclusions.</p>
+  <div class="callout"><span class="k">My read</span><p>The gap matters, but it starts late and it is small. The bigger problem sits in bookings for today and tomorrow, which are most bookings and most no-shows.</p></div>
+
+  <figure>
+    <div class="chartwrap" id="chart"></div>
+    <figcaption>Attendance by days between booking and demo. Red dots are the rows the analytics team flagged (days 4, 5 and 7). The axis starts at 50% to make a 10-point range readable; dots, not bars, so there is no implied zero. Hover a dot for the split.</figcaption>
+  </figure>
+
+  <h3>What stands out</h3>
+  <ul>
+    <li><b>Flat, then a step.</b> 0-1 days: 66%. 2-3 days: 62-64%. 4-5 days: 57%. That is a threshold around day 4, not a fixed cost for each day of waiting.</li>
+    <li><b>Day 6 breaks the pattern.</b> 63% at 6 days, then the low of 55% at 7. A real effect rarely bounces like that. Either the rows are small, or the weekday of booking and session is mixed into "days gap".</li>
+    <li><b>The benchmark gives away the booking mix.</b> 65% overall is barely below the 66% near-term rate. Long gaps can only pull the average down a little, so few bookings can be long gaps. The arithmetic is below.</li>
+  </ul>
+
+  <div class="tablewrap"><table>
+    <thead><tr><th>Booking gap</th><th class="r">Share of bookings (est.)</th><th class="r">Attended</th><th class="r">No-shows per 100 bookings</th></tr></thead>
+    <tbody>
+      <tr><td>0-1 days</td><td class="r num">75</td><td class="r num">66%</td><td class="r num">25.5</td></tr>
+      <tr><td>2-3 days</td><td class="r num">15</td><td class="r num">63%</td><td class="r num">5.6</td></tr>
+      <tr><td>4-7 days</td><td class="r num">10</td><td class="r num">58%</td><td class="r num">4.2</td></tr>
+    </tbody>
+    <tfoot><tr><td>All</td><td class="r num">100</td><td class="r num">64.75% ≈ 65%</td><td class="r num">35.3</td></tr></tfoot>
+  </table></div>
+  <ul class="small">
+    <li><b>Assumptions:</b> rows within a bucket count equally (2-3 days = 63%, 4-7 days = 58%); there are 3 bookings at 2-3 days for every 2 at 4-7 days; nothing beyond 7 days is missing from the table.</li>
+    <li><b>The mix is not unique.</b> The benchmark is rounded, so anything from 64.5% to 65.5% fits. Under the 3:2 assumption that means 70% to 90% of bookings are 0-1 days out. 75/15/10 is a round mix inside that range. Every mix in it leaves the 0-1 day group with most no-shows.</li>
+    <li><b>What each fix is worth.</b> Raising every 4-7 day booking to 66% adds <span class="num">0.8</span> points overall (10 × 8 ÷ 100). Raising every 2-7 day booking to 66% adds about <span class="num">1.25</span> (15 × 3 + 10 × 8, ÷ 100). Cutting 0-1 day no-shows by a fifth, 34% to 27%, adds about <span class="num">5</span> (75 × 6.8 ÷ 100 = 5.1).</li>
+  </ul>
+  <p class="hand">→ The gap is real but worth about a point. The prize is in near-term bookings, so any fix must work for them too.</p>
+
+  <h3>What it raises</h3>
+  <ul>
+    <li>Why were days 4, 5 and 7 flagged: a test of significance, or a visual cut? With rows this size, the flags may be noise.</li>
+    <li>Is "days gap" a cause, or a label for a different kind of parent, channel or weekday?</li>
+    <li>Why does a same-day booking still lose 34%? Forgetting cannot explain that.</li>
+  </ul>
+
+  <h3>What I'd want to know before concluding</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Question</th><th>Why it matters</th><th>How I'd get it</th></tr></thead>
+    <tbody>
+      <tr><td>Bookings per row</td><td>At ~300 a row, one row's 95% interval is about ±5.5 points, and the gap between two rows about ±7.8. Day 6's bounce could be noise.</td><td>Row counts from the same analytics query</td></tr>
+      <tr><td>Did parents choose the long gap, or were near slots full?</td><td>Separates who books late (selection) from fading intent (decay). Different fixes.</td><td>Join bookings to slot availability at booking time</td></tr>
+      <tr><td>Weekday of booking and of session</td><td>4-5 day gaps often cross from weekend into a busy weekday. Day 6 may be weekend to weekend.</td><td>Re-cut attendance by session weekday</td></tr>
+      <tr><td>Session time and the parent's time zone</td><td>5 PM IST is the school run in Dubai and 6:30 AM in New York.</td><td>Country code on the booking, slot time</td></tr>
+      <tr><td>Channel mix by gap</td><td>A Google search for maths help and a Meta reel bring different parents. If Meta skews to long gaps, the gap is partly a channel effect.</td><td>UTM source on the booking</td></tr>
+      <tr><td>Current reminders and read rates</td><td>Some no-shows never saw a reminder.</td><td>WhatsApp provider delivery and read logs</td></tr>
+      <tr><td>Definition of "attended"; where reschedules go</td><td>Counting reschedules as no-shows inflates long gaps.</td><td>Ask analytics for the definition; trace rescheduled bookings</td></tr>
+      <tr><td>Enrollment by gap, among attendees</td><td>If late bookers who attend still enroll less, the gap is a lead-quality signal, not just logistics.</td><td>CRM enrollment joined to bookings</td></tr>
+      <tr><td>Which months</td><td>Exams, Diwali and summer holidays change family calendars.</td><td>Date range of the pull; split by month</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<!-- PART 2 -->
+<section class="ans" id="p2"><div class="mg"><b>2.</b><span>Diagnose</span></div><div class="tx">
+  <h2>Part 2. Diagnose the drop</h2>
+  <p class="brief"><b>The brief:</b> do I agree with the two beliefs; what happens between booking and session; what forces work against attendance as time passes.</p>
+
+  <div class="quote"><small>Belief 1</small>"Some on our team believe attendance falls as the booking gap grows."</div>
+  <div class="verdict"><span class="tag t-next">Partly agree</span></div>
+  <p>Attendance does fall with the gap, but as a step after day 3, not a steady decline. And it explains a minority of no-shows: about 10 of every 35. If the team treats the gap as the main cause, it will optimise for the 25% of bookings where the smaller share of the problem sits.</p>
+
+  <div class="quote"><small>Belief 2</small>"They also believe a parent who books 5 days out is no different from one who books the same day, since both wanted the demo when they clicked the ad."</div>
+  <div class="verdict"><span class="tag t-now">Disagree</span></div>
+  <p>Clicking the ad was the last moment they were alike. Three things separate them:</p>
+  <ul>
+    <li><b>They chose differently.</b> Picking a slot 5 days out when today's is open often signals lower urgency. It can also mean a real constraint, like a working parent who only has Saturdays.</li>
+    <li><b>Their reason fades.</b> A booking starts with a specific feeling: a bad test, a homework fight, a reel of a child doing sums at speed. That feeling peaks at the click.</li>
+    <li><b>Life gets more chances.</b> Each extra day adds a tuition class, a birthday, a fever or a school project.</li>
+  </ul>
+
+  <h3>How I'd separate selection from decay</h3>
+  <p>The two need different fixes. If it is selection, pulling parents into earlier slots will not help. If it is decay, more near-term capacity is a real lever.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Method</th><th>Compare</th><th>Reading</th></tr></thead>
+    <tbody>
+      <tr><td>Natural experiment (existing data)</td><td>Parents who picked a far slot while near ones were open vs parents pushed out because near slots were full</td><td>Pushed-out parents attend like same-day bookers: selection. They drop too: decay.</td></tr>
+      <tr><td>Randomised nudge (idea D)</td><td>Families randomly shown near slots first vs the current page</td><td>Nudged families attend like natural near-term bookers: decay. They attend like far bookers: selection.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>The forces against attendance</h3>
+  <p>These are hypotheses until the Week 0 calls (Part 3) confirm them. I have not spoken to a family yet.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Force</th><th>What it looks like for this family</th><th>Idea that counters it</th></tr></thead>
+    <tbody>
+      <tr><td><b>The "why" fades</b></td><td>Day 0: "Aarav needs help with fractions." Day 5: "What was that thing at 5?"</td><td>C quest, A puzzles, E voice note</td></tr>
+      <tr><td><b>Abstract when booked, concrete when due</b></td><td>At booking it is "good for my child". On the day it is a charged laptop, a quiet room and a child back from cricket.</td><td>A day-before checklist, C readiness check</td></tr>
+      <tr><td><b>Nobody notices a skip</b></td><td>A tuition teacher would notice. Missing a free demo has no social cost.</td><td>A "Shall I tell Ms. Sneha?", C teacher has seen the stamp, F join rescue</td></tr>
+      <tr><td><b>Second thoughts</b></td><td>A spouse asks "do we need another class?", and a free demo usually ends in a sales call. Not showing up is the easiest way out.</td><td>A no-pressure line about the call, B one-tap reschedule</td></tr>
+      <tr><td><b>The child was never asked</b></td><td>The parent booked. The child hears about it on the day as "one more class" and resists.</td><td>C quest</td></tr>
+      <tr><td><b>Messages get buried</b></td><td>The confirmation sinks under school WhatsApp groups. Unknown numbers go unanswered.</td><td>A named sender and capped volume, F Truecaller-labelled call</td></tr>
+      <tr><td><b>The weekly calendar</b></td><td>Booked in weekend mode, attended in weekday mode. May explain the day 4-5 dip and the day 6 rebound.</td><td>D near-term slots, B reschedule</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout"><span class="k">Takeaway</span><p>Four of the seven forces (nobody notices, second thoughts, the child not asked, buried messages) apply on day 0 too. That is why a same-day booking still loses 34%, and why the main bet targets commitment, not memory.</p></div>
+</div></section>
+
+<!-- PART 3 -->
+<section class="ans" id="p3"><div class="mg"><b>3.</b><span>Ideas</span></div><div class="tx">
+  <h2>Part 3. Ideas</h2>
+  <p class="brief"><b>The brief:</b> ideas to lift attendance; for each, what and why, the lever, and what I'd prioritise first. Communication ideas need actual copy.</p>
+  <div class="callout"><span class="k">How I judge every idea</span><p>Attendance per booking, with every booking in the denominator, and enrollments per booking as the confirming check. An idea that lifts the attendance <i>rate</i> by filtering out bookings (a stricter booking page, a deposit) fails this test.</p></div>
+
+  <p class="small muted scrollhint">Swipe the table sideways to see every column.</p>
+  <div class="tablewrap scrollx"><table>
+    <thead><tr><th>Idea</th><th>What</th><th>Lever</th><th>Reaches</th><th>Effort</th><th>Priority</th></tr></thead>
+    <tbody>
+      <tr><td><a href="#idea-a"><b>A.</b> WhatsApp sequence</a></td><td>Rewritten, capped messages from a named teacher</td><td>Commitment, concrete plans, someone waiting</td><td>Every booking</td><td>Days</td><td><span class="tag t-now">Now</span></td></tr>
+      <tr><td><a href="#idea-b"><b>B.</b> Reschedule and recovery</a></td><td>One tap to a new near-term slot</td><td>Make honesty easier than ghosting</td><td>Every would-be no-show</td><td>Days</td><td><span class="tag t-now">Now</span></td></tr>
+      <tr><td><a href="#idea-c"><b>C.</b> Warm-up quest</a></td><td>5 minutes of puzzles for the child, briefs for staff</td><td>Child as co-owner, curiosity, proof of learning</td><td>Every booking</td><td>2-3 weeks</td><td><span class="tag t-next">Next</span></td></tr>
+      <tr><td><a href="#idea-d"><b>D.</b> Near-term booking page</a></td><td>Next 48 hours shown first</td><td>Defaults, social norm</td><td>New bookings</td><td>Needs slot capacity</td><td><span class="tag t-next">Next</span></td></tr>
+      <tr><td><a href="#idea-e"><b>E.</b> Teacher voice note</a></td><td>Recorded note the day before</td><td>Reciprocity, a real voice</td><td>Every booking</td><td>Teacher time</td><td><span class="tag t-later">Later</span></td></tr>
+      <tr><td><a href="#idea-f"><b>F.</b> Join rescue</a></td><td>A call at 3 minutes past start</td><td>Remove friction when it bites</td><td>Late joiners</td><td>Ops staffing</td><td><span class="tag t-later">Later</span></td></tr>
+      <tr><td><a href="#idea-g"><b>G.</b> ₹99 seat hold</a></td><td>Refundable deposit</td><td>Loss aversion</td><td>4+ day gaps</td><td>Payments work</td><td><span class="tag t-later">Test only</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="idea" id="idea-a">
+    <div class="idea-head"><h3>A. Rewritten WhatsApp sequence</h3><span class="tag t-now">Now</span></div>
+    <dl class="facts">
+      <dt>What</dt><dd>Each message gives a reason to come (a named teacher who has prepared), makes the plan concrete, asks for a small yes, and defuses the fear of a sales call. Tappable options are WhatsApp quick-reply buttons.</dd>
+      <dt>Why</dt><dd>It reaches every booking, including the same-day ones where most no-shows are, and it ships in days.</dd>
+      <dt>Lever</dt><dd>Reciprocity, implementation intentions, a small public commitment, lower anticipated sales pressure.</dd>
+    </dl>
+
+    <h4>Volume and cost guardrails</h4>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Booking gap</th><th>What the family receives</th><th class="r">Total</th></tr></thead>
+      <tbody>
+        <tr><td>Same day</td><td>Confirmation · 15 min before · (5 min late, only if not joined)</td><td class="r num">2-3</td></tr>
+        <tr><td>1-2 days</td><td>Confirmation · day before · morning of · 15 min before · (5 min late)</td><td class="r num">4-5</td></tr>
+        <tr><td>3-7 days</td><td>Above, plus a puzzle every other evening; stops after two unopened in a row</td><td class="r num">5-8</td></tr>
+      </tbody>
+    </table></div>
+    <ul class="small">
+      <li><b>Cap:</b> at most one message we start per day, except on class day. Replies to the parent don't count.</li>
+      <li><b>Templates:</b> anything outside WhatsApp's 24-hour reply window needs a pre-approved template. Logistics messages are utility templates; the puzzles are marketing templates.</li>
+      <li><b>Cost:</b> utility messages cost a fraction of a rupee each in India, marketing messages around a rupee (check the current Meta rate card). Even 8 messages is a few rupees per booking, small next to the ad cost of the booking.</li>
+      <li><b>Hard stop:</b> block and opt-out rate. A rising block rate lowers the account's quality rating, which can limit messaging for every family.</li>
+    </ul>
+
+    <h4>The messages</h4>
+    <div class="thread">
+      <div class="msg"><div class="when"><b>Booking confirmed</b>instantly</div>
+        <div class="bub"><div class="bubble">Hi <span class="ph">{Priya}</span>! <span class="ph">{Aarav}</span>'s free live maths class is booked.
+
+<span class="ph">{Sat, 2 Nov}</span> at <span class="ph">{5:00 PM}</span>, with <span class="ph">{Ms. Sneha}</span>, who teaches <span class="ph">{9-11}</span> year olds.
+
+<span class="ph">{Ms. Sneha}</span> has made <span class="ph">{Aarav}</span> a 5-minute maths warm-up. She'll see how <span class="ph">{Aarav}</span> plays and plan the class around it.</div>
+        <div class="qrs"><span>Start the warm-up</span><span>Add to calendar</span><span>Change the time</span></div></div></div>
+      <p class="why">A person, not a brand. The quest link sits in the message most likely to be read. "Change the time" offers a way out before it becomes a silent no-show.</p>
+
+      <div class="msg"><div class="when"><b>Puzzle</b>7 PM, every other day, gaps of 3+ days</div>
+        <div class="bub"><div class="bubble">For <span class="ph">{Aarav}</span>, tonight's 1-minute puzzle:
+Which is bigger, 0.5 or 2/5?
+<span class="ph">{Ms. Sneha}</span> sees every answer before class.</div>
+        <div class="qrs"><span>0.5</span><span>2/5</span></div></div></div>
+      <p class="why">Keeps the reason for booking alive through a long gap, and reaches the child through the parent's phone.</p>
+
+      <div class="msg"><div class="when"><b>Day before</b>7:30 PM</div>
+        <div class="bub"><div class="bubble">Tomorrow at <span class="ph">{5:00 PM}</span>, <span class="ph">{Aarav}</span> meets <span class="ph">{Ms. Sneha}</span>.
+
+Three things make the hour go best:
+· A laptop or tablet (phones work too)
+· A quiet corner, paper and a pencil
+· You nearby for the first 5 minutes
+
+Open the class link once tonight to check it works. No app needed: <span class="ph">{link}</span>
+
+After class, a counsellor calls for about 10 minutes to share how <span class="ph">{Aarav}</span> did. There's no pressure to decide anything on that call.</div>
+        <div class="qrs"><span>All set</span><span>Change the time</span></div></div></div>
+      <p class="why">Turns "attend the demo" into three concrete steps, moves link problems to the night before, and answers the unspoken "will they push me to buy?" once, plainly.</p>
+
+      <div class="msg"><div class="when"><b>Day before, Hindi</b>same time</div>
+        <div class="bub"><div class="bubble">Kal shaam <span class="ph">{5 baje}</span> <span class="ph">{Aarav}</span> ki class hai <span class="ph">{Sneha ma'am}</span> ke saath.
+Laptop ya tablet, pencil-copy, aur pehle 5 minute aap saath baithein. Bas itna kaafi hai.
+Link aaj raat ek baar khol kar dekh lijiye: <span class="ph">{link}</span></div>
+        <div class="qrs"><span>Sab tayyar hai</span><span>Time badlein</span></div></div></div>
+      <p class="why">For parents who chose Hindi at booking. Written to sound natural, not translated.</p>
+
+      <div class="msg"><div class="when"><b>Morning of</b>9 AM</div>
+        <div class="bub"><div class="bubble">Good morning! <span class="ph">{Aarav}</span>'s class is today at <span class="ph">{5:00 PM}</span>. Shall I tell <span class="ph">{Ms. Sneha}</span> to expect <span class="ph">{Aarav}</span>?</div>
+        <div class="qrs"><span>Yes, we'll be there</span><span>Change the time</span></div></div></div>
+      <p class="why">A small yes to a named person. No reply by noon triggers a counsellor call. This reply is also the early signal in Part 4.</p>
+
+      <div class="msg"><div class="when"><b>15 min before</b></div>
+        <div class="bub"><div class="bubble"><span class="ph">{Ms. Sneha}</span> is getting the classroom ready. <span class="ph">{Aarav}</span>'s class starts in 15 minutes.</div>
+        <div class="qrs"><span>Join the class</span></div></div></div>
+
+      <div class="msg"><div class="when"><b>5 min after start</b>only if not joined</div>
+        <div class="bub"><div class="bubble"><span class="ph">{Ms. Sneha}</span> is waiting for <span class="ph">{Aarav}</span>. Class has just started and you can still join.</div>
+        <div class="qrs"><span>Join now</span><span>Not today, pick another time</span></div></div></div>
+      <p class="why">Personal and true, without guilt, and with a way out.</p>
+    </div>
+  </div>
+
+  <div class="idea" id="idea-b">
+    <div class="idea-head"><h3>B. One-tap reschedule and recovery</h3><span class="tag t-now">Now</span></div>
+    <dl class="facts">
+      <dt>What</dt><dd>Every "Change the time" button returns the three nearest slots. A missed demo triggers the message below two hours later.</dd>
+      <dt>Why</dt><dd>Today a parent who can't make it can call someone or disappear. Disappearing is easier, and those families are rarely recovered.</dd>
+      <dt>Lever</dt><dd>No blame, a reason to return ("she'll start from there"), and only near-term slots so we don't create a new long gap.</dd>
+    </dl>
+    <div class="thread"><div class="msg"><div class="when"><b>No-show</b>+2 hours</div>
+      <div class="bub"><div class="bubble">We missed <span class="ph">{Aarav}</span> today, and that's completely fine. Evenings get busy.
+<span class="ph">{Ms. Sneha}</span> kept <span class="ph">{Aarav}</span>'s warm-up results. Pick a new time and she'll start from there.</div>
+      <div class="qrs"><span><span class="ph">{Tomorrow 5 PM}</span></span><span><span class="ph">{Tomorrow 7 PM}</span></span><span><span class="ph">{Sat 11 AM}</span></span></div></div></div></div>
+    <p class="small"><b>Guardrail:</b> a booking that reschedules and attends within 7 days counts as attended, so the test can't hide no-shows inside reschedules, and reschedule rate is tracked on its own.</p>
+  </div>
+
+  <div class="idea" id="idea-c">
+    <div class="idea-head"><h3>C. Child warm-up quest</h3><span class="tag t-next">Next</span></div>
+    <dl class="facts">
+      <dt>What</dt><dd>A 5-minute set of puzzles for the child's age group, ending in a locked level the teacher opens live, a stamp with the child's name, and a pre-class brief for the teacher and counsellor. Built in Part 4.</dd>
+      <dt>Why</dt><dd>The child is the one attending, and no other idea speaks to them.</dd>
+      <dt>Lever</dt><dd>The child as co-owner (children are persistent reminders), curiosity about an unfinished level, ownership of something earned, proof of learning for the parent, a teacher who visibly prepared.</dd>
+      <dt>Guardrail</dt><dd>Only the child's first name, with parental consent on the first screen. Speed is never shown to the parent.</dd>
+    </dl>
+  </div>
+
+  <div class="idea" id="idea-d">
+    <div class="idea-head"><h3>D. Booking page favours the next 48 hours</h3><span class="tag t-next">Next</span></div>
+    <dl class="facts">
+      <dt>What</dt><dd>Today's and tomorrow's slots first, later dates behind "See more dates", with one line above the slots (below).</dd>
+      <dt>Why</dt><dd>If the long-gap drop is decay, earlier slots prevent it. Run randomised, it also answers selection vs decay.</dd>
+      <dt>Lever</dt><dd>Defaults, social norm.</dd>
+      <dt>Guardrail</dt><dd>Booking completion must not drop. A parent who can only do Saturday should still book Saturday.</dd>
+    </dl>
+    <p class="hand" style="color:var(--ink)">"Most families pick a time in the next 2 days, while it's fresh for their child."</p>
+  </div>
+
+  <div class="idea" id="idea-e">
+    <div class="idea-head"><h3>E. Teacher voice note, day before</h3><span class="tag t-later">Later</span></div>
+    <dl class="facts">
+      <dt>What</dt><dd>Recorded once per age band, with the child's name dropped in (below).</dd>
+      <dt>Lever</dt><dd>Reciprocity (she made something for him), a real voice instead of a brand, curiosity about the puzzle.</dd>
+      <dt>Why later</dt><dd>It costs teacher time, so it waits until A to C show what moves attendance.</dd>
+    </dl>
+    <p class="hand" style="color:var(--ink)">"Hi Aarav, I'm Sneha, your maths teacher for tomorrow. I saw your Pattern Spotter stamp! I've got one puzzle I think might trip you up. Let's find out tomorrow at 5."</p>
+  </div>
+
+  <div class="idea" id="idea-f">
+    <div class="idea-head"><h3>F. Join rescue</h3><span class="tag t-later">Later</span></div>
+    <dl class="facts">
+      <dt>What</dt><dd>If the child hasn't joined 3 minutes in, someone calls from a number registered on Truecaller as "Bhanzu Class Today" and talks the parent through joining.</dd>
+      <dt>Why</dt><dd>Some no-shows are "couldn't get in", not "didn't want to".</dd>
+      <dt>Lever</dt><dd>Removing friction at the exact moment it bites, and a human who notices you're missing.</dd>
+      <dt>Why later</dt><dd>It needs callers on shift at every slot. First measure how many no-shows are failed joins (class-link opens without a join).</dd>
+    </dl>
+  </div>
+
+  <div class="idea" id="idea-g">
+    <div class="idea-head"><h3>G. ₹99 refundable seat hold</h3><span class="tag t-later">Test only</span></div>
+    <dl class="facts">
+      <dt>What</dt><dd>An optional deposit on 4+ day bookings, refunded after class (copy below).</dd>
+      <dt>Lever</dt><dd>Loss aversion and commitment: money on the table makes the slot feel owned.</dd>
+      <dt>Risk</dt><dd>It adds friction at booking and can make a free demo feel like a sales funnel. Judged on attendance and enrollments per booking, never on attendance rate among those who paid.</dd>
+    </dl>
+    <p class="hand" style="color:var(--ink)">"Hold Aarav's seat for ₹99. It comes back to you in full right after the class."</p>
+  </div>
+
+  <h3>What I'd ship first and why</h3>
+  <div class="callout"><span class="k">Order</span><p><b>A and B now, C next, D when capacity allows, E to G only with evidence.</b></p></div>
+  <ul>
+    <li><b>A and B first.</b> They are cheap, reach every family including same-day bookings, and can go live in a week as a test against the current sequence.</li>
+    <li><b>C is the bigger bet,</b> and its link rides in A's first message, so the two compound. It needs A in place, which is why it follows.</li>
+    <li><b>D</b> only works if near-term slots exist; it waits on a capacity check.</li>
+    <li><b>E to G</b> cost people, money or trust, so they wait for evidence from A to C.</li>
+  </ul>
+  <div class="box">
+    <b>Week 0: talk to families before building</b>
+    <p>Call 10 families who missed a demo in the last fortnight and 5 who came. Ten minutes each, four questions:</p>
+    <ol>
+      <li>What were you doing at the time the class started?</li>
+      <li>When did you last think about the class before that?</li>
+      <li>What did your child know about it?</li>
+      <li>What did you expect would happen after the class?</li>
+    </ol>
+    <p class="small muted">Every force in Part 2 is a hypothesis. These calls tell me which are real before we spend build time.</p>
+  </div>
+</div></section>
+
+<!-- PART 4 -->
+<section class="ans" id="p4"><div class="mg"><b>4.</b><span>Build</span></div><div class="tx">
+  <h2>Part 4. The micro-experience: Math Warm-up Quest</h2>
+  <p class="brief"><b>The brief:</b> build the one idea that does most to lift attendance and carry engagement into the demo, counsellor call and enrollment; say why this idea, what the parent and child see and do, and the one early signal in the first 3 days.</p>
+
+  <h3 class="flush">What it is and how to try it</h3>
+  <p>A 5-minute quest the parent opens from the booking confirmation and hands to the child. It ends with a locked level the teacher opens live and a stamp with the child's name, then gives the parent a short report and a readiness check. The teacher and counsellor each get a brief. Both links below are real and usable. They run on free servers, so the first load can take up to a minute to wake.</p>
+  <div class="launch">
+    <p><b>Warm-up quest.</b> The page a parent opens from WhatsApp. Best on a phone. "Change booking details" at the top lets you try another name, age group or gap. The Teacher and Counsellor tabs show what each role sees.</p>
+    <a class="cta" href="https://claude.ai/artifact/AP3ignfuwBQgW3CaatnbMv" target="_blank" rel="noopener">Warm-up quest ↗</a>
+  </div>
+  <div class="launch">
+    <p><b>Full prototype and phone app.</b> The quest inside the whole journey: booking page, the WhatsApp sequence on a simulated phone with working quick replies, a time control to skip to class day, the teacher and counsellor console, and the experiment readout. The phone app is the same loop built for a phone, with Parent, Child and Staff modes. Parents abroad see every time in their own time zone.</p>
+    <div class="tryit">
+      <a class="cta ghost" href="https://bhanzu-demo-prep.onrender.com" target="_blank" rel="noopener">Full prototype ↗</a>
+      <a class="cta ghost" href="https://bhanzu-mobile.onrender.com" target="_blank" rel="noopener">Phone app ↗</a>
+    </div>
+  </div>
+
+  <h3>Why this idea over the others</h3>
+  <ul>
+    <li><b>It is the only idea aimed at the child, who is the one attending.</b> Messages persuade the parent. A child who wants the locked level reminds the parent at 4:55 PM.</li>
+    <li><b>It works on a short gap.</b> It sits in the first message and takes 5 minutes, so a parent who books at noon for 5 PM can still do it. That matters because most no-shows are near-term.</li>
+    <li><b>It counters the forces that apply on day 0.</b> A teacher who has seen the stamp means someone expects the child. The child has been asked. The report and checklist make the plan concrete.</li>
+    <li><b>It carries through the funnel.</b> The teacher and counsellor open with what the child and parent actually did and said.</li>
+    <li><b>The trade-off I accept:</b> it takes longer to build than A or B, and some parents won't hand over the phone. A and B ship first so the quest is additive, not a dependency.</li>
+  </ul>
+
+  <h3>What the parent and child see and do</h3>
+  <ol class="steps">
+    <li><span><span class="who">Parent</span>Taps "Start the warm-up" in the confirmation. Sees the date, time in their own time zone and teacher, answers <i>what would you most like help with?</i>, and gives consent: only the child's first name is used, and only the teacher and counsellor see the answers.</span></li>
+    <li><span><span class="who">Parent</span>If the child isn't around, taps "isn't with me right now" and picks when to be reminded (4 PM, 7 PM, tomorrow morning), or copies the link to the child's tablet.</span></li>
+    <li><span><span class="who">Parent</span>When the child is there: "Hand over the phone".</span></li>
+    <li><span><span class="who c">Child</span>Chooses English or हिंदी and picks a secret maths sign (π, ∞, √).</span></li>
+    <li><span><span class="who c">Child</span>Plays 5 puzzles for their age group (6-8, 9-11, 12-14), written in rupees and laddoos. Every answer reveals a Bhanzu trick, and correct answers get the teacher's red tick. Wrong answers get a hint, not a cross. 6-8 year olds can have puzzles read aloud.</span></li>
+    <li><span><span class="who c">Child</span>Finds a locked level the teacher opens live in class, and picks what they want to get good at.</span></li>
+    <li><span><span class="who c">Child</span>Earns a stamp with their name and their teacher's, then hands the phone back.</span></li>
+    <li><span><span class="who">Parent</span>Reads what the child did (never how fast), how the hour will run minute by minute, one note about the counsellor call, and who started Bhanzu.</span></li>
+    <li><span><span class="who">Parent</span>Does a 30-second checklist: Google Calendar (a real link), which screen, who sits in, a real check of this phone's connection and screen. Then "We'll be there", or the nearest new slots.</span></li>
+    <li><span><span class="who">Parent</span>For gaps of 3+ days, sees the puzzle schedule up to class day and can try tomorrow's puzzle.</span></li>
+    <li><span><span class="who s">Teacher</span>Sees results by skill (with times, which the parent never sees), the child's goal, what the parent mentioned, and a script for the first 3 minutes.</span></li>
+    <li><span><span class="who s">Counsellor</span>Sees confirmation status, setup, a no-show risk level with the action to take, and an opening line built from the parent's and child's own words. The teacher doesn't see the risk level.</span></li>
+  </ol>
+
+  <h3>How it carries into the demo, the call and enrollment</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Stage</th><th>What carries over</th><th>What it changes</th></tr></thead>
+    <tbody>
+      <tr><td>Demo</td><td>The stamp, results by skill, the child's goal, the locked level</td><td>The teacher opens with the child's stamp, starts on their weak spot, and unlocks the level live. The child arrives expecting something.</td></tr>
+      <tr><td>Counsellor call</td><td>The parent's worry in their own words, the child's goal, readiness status</td><td>The call opens with the parent's concern and the child's goal, not price. Before class, the risk level tells the counsellor whom to call.</td></tr>
+      <tr><td>Enrollment</td><td>The parent report (proof of learning) and the teacher's plan</td><td>The parent has seen their child learn twice, before and during class. Measured as enrollments per booking.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>The one early signal</h3>
+  <div class="sig"><span class="k">The one early signal, first 3 days</span><p class="big">Morning-of "Yes, we'll be there" WhatsApp reply rate, test arm vs control.</p>
+    <ul class="small">
+      <li><b>Why it works:</b> both arms get the same morning message, and booking is randomised, so a gap between arms is caused by the quest.</li>
+      <li><b>Only the WhatsApp reply counts.</b> The quest has its own "We'll be there" button that control families never see. Counting it would flatter the test arm.</li>
+      <li><b>When it reads:</b> by day 3, from bookings made 1-2 days ahead. Same-day bookings made after 9 AM don't get the morning message, so they wait for attendance.</li>
+      <li><b>How I read it:</b> test above control means keep filling the test. At or below control means the quest isn't building commitment: check the supporting funnel before adding traffic. In the control arm, I first confirm that a YES predicts attendance before trusting it.</li>
+    </ul>
+  </div>
+  <div class="sig soft"><span class="k">Supporting check, not a success measure</span><p class="big">Share of booked families whose child reaches the stamp within 24 hours.</p>
+    <p class="small">40% or more: fine. 20-40%: fix the step with the biggest drop (opened, handed over, started, finished). Under 20%: rethink the handover. Completion alone can't justify scaling: families who finish were probably more likely to attend anyway.</p>
+  </div>
+
+  <h3>Experiment design</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Element</th><th>Choice</th></tr></thead>
+    <tbody>
+      <tr><td>Unit and split</td><td>Booking, keyed on the parent's phone number so a family stays in one arm. 50/50, stratified by gap (0-1, 2-3, 4-7 days).</td></tr>
+      <tr><td>Arms</td><td>Control: new WhatsApp sequence and reschedule flow (A and B). Test: the same, plus the quest link in the confirmation.</td></tr>
+      <tr><td>Counsellor effort</td><td>No-show risk uses only signals both arms have (WhatsApp replies, unread messages, gap, reschedules). Quest activity never raises or lowers the risk level, so calls are not confounded with the arm.</td></tr>
+      <tr><td>Early signal</td><td>Morning-of WhatsApp YES rate, test vs control (above).</td></tr>
+      <tr><td>Go/no-go metric</td><td>Attendance per booking: attended the original or a rescheduled class within 7 days, over all bookings including cancellations. Detecting 65% to 68% needs about <span class="num">4,000</span> bookings per arm.</td></tr>
+      <tr><td>Confirming metric</td><td>Enrollments per booking. If about 27% of attendees enroll, the same lift moves it from 17.6% to 18.4%, which needs about <span class="num">35,000</span> per arm. The split keeps running after the go decision until that sample is reached.</td></tr>
+      <tr><td>Guardrails</td><td>WhatsApp block and opt-out rate, reschedule rate, counsellor call connect rate, enrollment per attended demo.</td></tr>
+      <tr><td>Kill criteria</td><td>Fixed in advance and printed on the experiment page of both builds. 1. Stop at once if the test arm's block or STOP rate exceeds control by more than 0.5 points, or the account quality rating drops. 2. Pause and fix the handover if quest completion is under 20% after 2 weeks. 3. Stop at about 4,000 bookings per arm if the 95% interval on the attendance lift sits entirely below +1 point. Enrollments per booking is a guardrail too: it must not be lower in test with the interval excluding zero.</td></tr>
+      <tr><td>Duration</td><td>Weeks = 8,000 ÷ weekly bookings for attendance, and 70,000 ÷ weekly bookings for enrollments. At 5,000 bookings a week (an assumption), that is under 2 weeks and about 14 weeks.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small muted">Sample sizes assume a two-sided test at 5% significance and 80% power, and that the quest adds attendees who enroll at the same rate as today's. If the quest also lifts enrollment per attended demo, the enrollment read needs fewer bookings.</p>
+  <p class="small muted">Prototype limits: the calendar link and device check are real; the class link and WhatsApp sends are simulated in the full prototype and shown, not sent, in the quest. Parent screens are English only for now, child screens English and Hindi.</p>
+</div></section>
+
+<!-- ASSUMPTIONS -->
+<section class="ans" id="assumptions"><div class="mg"><b>A.</b><span>Assumptions</span></div><div class="tx">
+  <h2>Assumptions, risks, and what real data would change</h2>
+  <div class="callout"><span class="k">Where I'm least sure</span><p>The booking mix and the forces are inferred, not observed. If near-term bookings are a smaller share than I think, the case for long-gap ideas (D, G, the evening puzzles) gets stronger, and the quest still holds.</p></div>
+
+  <div class="tablewrap"><table>
+    <thead><tr><th>Assumption</th><th>Why it matters</th><th>How I'd test it</th></tr></thead>
+    <tbody>
+      <tr><td>About 75% of bookings are 0-1 days out</td><td>It moves the problem from long gaps to near-term bookings</td><td>Pull row counts by gap</td></tr>
+      <tr><td>The forces in Part 2 are the real reasons</td><td>Every idea targets one of them</td><td>Week 0 calls with 15 families</td></tr>
+      <tr><td>Parents will hand over the phone, now or later</td><td>The quest's effect runs through the child</td><td>Share choosing "now" vs "later", and how many "later" families come back</td></tr>
+      <tr><td>6-8 year olds can finish alone</td><td>The youngest band may need the parent</td><td>Completion by age band; read-aloud use</td></tr>
+      <tr><td>Teachers will read a 30-second brief</td><td>The demo carry-over depends on it</td><td>Pilot with 10 teachers for a week; track brief opens</td></tr>
+      <tr><td>Personalisation feels caring, not creepy</td><td>A child's data needs verifiable parental consent under India's DPDP Act</td><td>First name only, consent on the first screen; ask 10 parents afterwards</td></tr>
+      <tr><td>A morning YES predicts attendance</td><td>The early signal is only useful if it does</td><td>Attendance of YES vs no-reply families in the control arm</td></tr>
+      <tr><td>The risk level means something</td><td>Counsellors spend calls on it</td><td>A rule of thumb today; refit against real no-shows after 2 weeks</td></tr>
+      <tr><td>About 27% of attendees enroll</td><td>Sets the 35,000 per arm sample</td><td>CRM enrollment rate for the last quarter</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Risks</h3>
+  <ul>
+    <li><b>Message fatigue.</b> More messages could raise blocks and hurt every family's messaging. The cap and the block-rate kill criterion handle it.</li>
+    <li><b>The quest becomes a test.</b> A child who struggles could arrive anxious. Hints instead of crosses, and no speed shown to the parent.</li>
+    <li><b>Teacher load.</b> If teachers ignore the brief, the carry-over into the demo is lost. The pilot measures it before scale.</li>
+    <li><b>Slow confirmation.</b> Enrollments per booking may take months at Bhanzu's volume. I'd decide on attendance and keep the split running rather than wait.</li>
+    <li><b>Abroad families.</b> Slots run on India teacher hours. Showing local times fixes confusion, not availability; US and UK families may still lack a sensible slot.</li>
+  </ul>
+
+  <h3>What I'd do differently with real data</h3>
+  <ul>
+    <li>Replace the back-solved mix with real row counts and redo the no-show split.</li>
+    <li>Re-cut attendance by weekday, channel, time zone and month before trusting any gap effect.</li>
+    <li>Set the minimum detectable lift from real volume, and size the test on it rather than on +3 points.</li>
+    <li>Fit the risk level on past no-shows instead of a rule of thumb.</li>
+    <li>Put real parent quotes from the Week 0 calls next to each force in Part 2.</li>
+  </ul>
+</div></section>
+
+<!-- CLOSING -->
+<section class="ans" id="walkthrough"><div class="mg"><b>Q.</b><span>Walkthrough</span></div><div class="tx">
+  <h2>What I'd want to discuss in the walkthrough</h2>
+  <ul>
+    <li><b>The booking mix.</b> Does Bhanzu's data confirm that most bookings, and most no-shows, are 0-1 days out?</li>
+    <li><b>The metric.</b> Is attendance per booking the right go/no-go, with enrollments per booking as the confirming read, at your weekly volume?</li>
+    <li><b>The child.</b> How often does the child know about the demo before the day, and how do teachers handle a child who didn't want to come?</li>
+    <li><b>The sales call.</b> How much of the same-day loss do counsellors think is a polite "no" to the call?</li>
+    <li><b>Capacity.</b> Can we open more near-term slots, including for families abroad?</li>
+  </ul>
+</div></section>
+</main>
+<p class="endnote">Prepared for the Bhanzu Growth PM case study by Shourya Singh. Message copy uses example names; placeholders are in braces.</p>
+
+<script>
+(function(){
+  const data = [[0,66],[1,66],[2,64],[3,62],[4,57],[5,57],[6,63],[7,55]];
+  const flagged = new Set([4,5,7]), label = new Set([0,4,6,7]);
+  const W=660, H=310, L=50, R=24, T=24, B=46;
+  const x = d => L + d*(W-L-R)/7, y = v => T + (70-v)*(H-T-B)/20;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Attendance by booking gap: 66% at 0 and 1 days, 64% at 2, 62% at 3, 57% at 4 and 5, 63% at 6, 55% at 7. Benchmark 65%.">`;
+  [50,55,60,65,70].forEach(v=>{ s += `<text x="${L-10}" y="${y(v)+4}" text-anchor="end" font-size="12" fill="var(--pencil)" font-family="var(--mono)">${v}%</text>`; });
+  s += `<line x1="${L}" x2="${W-R}" y1="${y(65)}" y2="${y(65)}" stroke="var(--graphite)" stroke-width="1.5" stroke-dasharray="6 5"/>`;
+  s += `<text x="${L+6}" y="${y(65)-8}" font-size="12.5" fill="var(--graphite)" font-weight="600" font-family="var(--body)">65% overall benchmark</text>`;
+  s += `<polyline fill="none" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round" points="${data.map(([d,v])=>x(d)+','+y(v)).join(' ')}"/>`;
+  data.forEach(([d,v])=>{
+    s += `<text x="${x(d)}" y="${H-B+22}" text-anchor="middle" font-size="12.5" fill="var(--pencil)" font-family="var(--body)">${d===0?'Same day':d+(d===1?' day':' days')}</text>`;
+    s += `<circle cx="${x(d)}" cy="${y(v)}" r="7" fill="${flagged.has(d)?'var(--margin)':'var(--ink)'}" stroke="var(--sheet)" stroke-width="2.5"/>`;
+    if(label.has(d)) s += `<text x="${x(d)}" y="${y(v)+(d===6||d===0?-14:25)}" text-anchor="middle" font-size="13" font-weight="500" fill="var(--graphite)" font-family="var(--mono)">${v}%</text>`;
+    s += `<circle cx="${x(d)}" cy="${y(v)}" r="20" fill="transparent" data-d="${d}" data-v="${v}"/>`;
+  });
+  s += `<text x="${x(4.5)}" y="${y(51.6)}" text-anchor="middle" font-size="17" fill="var(--margin)" font-family="var(--hand)">the step down</text>`;
+  s += `<text x="${x(6)-8}" y="${y(68.6)}" text-anchor="middle" font-size="17" fill="var(--margin)" font-family="var(--hand)">noise, or weekends?</text>`;
+  s += `<text x="${L+(W-L-R)/2}" y="${H-6}" text-anchor="middle" font-size="12.5" fill="var(--pencil)" font-family="var(--body)">Days between booking and demo</text></svg>`;
+  const wrap = document.getElementById('chart');
+  wrap.innerHTML = s;
+  const tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; wrap.appendChild(tip);
+  wrap.addEventListener('pointerover', e=>{
+    const t = e.target; if(!t.dataset || t.dataset.d===undefined) return;
+    const k = wrap.querySelector('svg').getBoundingClientRect().width / W, d = +t.dataset.d, v = +t.dataset.v;
+    tip.textContent = (d===0?'Same day':d+' day'+(d===1?'':'s')+' out')+': '+v+'% attended, '+(100-v)+'% no-show';
+    tip.style.left = (x(d)*k - wrap.scrollLeft)+'px'; tip.style.top = (y(v)*k)+'px'; tip.hidden = false;
+  });
+  wrap.addEventListener('pointerout', e=>{ if(e.target.dataset && e.target.dataset.d!==undefined) tip.hidden = true; });
+})();
+</script>
+</body>
+</html>
